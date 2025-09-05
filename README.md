@@ -45,6 +45,7 @@ Since launching, Upptime has grown to over 16,000 stars and is actively used by 
 
 <!--start: docs-->
 
+
 ## ⭐ How it works
 
 - GitHub Actions is used as an uptime monitor
