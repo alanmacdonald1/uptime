@@ -4,8 +4,8 @@ repo: uptime
 
 
 sites:
-  - name: Google
-    url: https://www.google.com
+  - name: HAB Reports
+    url: https://www.habreports.org/
   - name: Wikipedia
     url: https://en.wikipedia.org
   - name: Hacker News
