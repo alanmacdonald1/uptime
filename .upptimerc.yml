@@ -6,12 +6,12 @@ repo: uptime
 sites:
   - name: HAB Reports
     url: https://www.habreports.org/
-  - name: Wikipedia
-    url: https://en.wikipedia.org
-  - name: Hacker News
-    url: https://news.ycombinator.com
-  - name: Test Broken Site
-    url: https://thissitedoesnotexist.koj.co
+  - name: Thredds
+    url: https://thredds.sams.ac.uk/
+  - name: IFCB Dashboard
+    url: https://ifcb-data.sams.ac.uk/
+  - name: SkateSpotter
+    url: https://skatespotter.sams.ac.uk/
   - name: IPv6 test
     url: forwardemail.net
     port: 80
