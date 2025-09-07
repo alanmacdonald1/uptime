@@ -22,19 +22,19 @@
     "url": "https://thredds.sams.ac.uk/",
     "icon": "https://icons.duckduckgo.com/ip3/thredds.sams.ac.uk.ico",
     "slug": "thredds",
-    "status": "down",
-    "uptime": "99.98%",
-    "uptimeDay": "99.96%",
-    "uptimeWeek": "99.98%",
-    "uptimeMonth": "99.98%",
-    "uptimeYear": "99.98%",
-    "time": 1013,
-    "timeDay": 1176,
-    "timeWeek": 1013,
-    "timeMonth": 1013,
-    "timeYear": 1013,
+    "status": "up",
+    "uptime": "99.23%",
+    "uptimeDay": "98.71%",
+    "uptimeWeek": "99.23%",
+    "uptimeMonth": "99.23%",
+    "uptimeYear": "99.23%",
+    "time": 1002,
+    "timeDay": 1073,
+    "timeWeek": 1002,
+    "timeMonth": 1002,
+    "timeYear": 1002,
     "dailyMinutesDown": {
-      "2025-09-07": 1
+      "2025-09-07": 19
     }
   },
   {
@@ -42,19 +42,19 @@
     "url": "https://ifcb-data.sams.ac.uk/",
     "icon": "https://icons.duckduckgo.com/ip3/ifcb-data.sams.ac.uk.ico",
     "slug": "ifcb-dashboard",
-    "status": "down",
-    "uptime": "100.00%",
-    "uptimeDay": "100.00%",
-    "uptimeWeek": "100.00%",
-    "uptimeMonth": "100.00%",
-    "uptimeYear": "100.00%",
-    "time": 7681,
-    "timeDay": 8078,
-    "timeWeek": 7681,
-    "timeMonth": 7681,
-    "timeYear": 7681,
+    "status": "up",
+    "uptime": "99.25%",
+    "uptimeDay": "98.73%",
+    "uptimeWeek": "99.25%",
+    "uptimeMonth": "99.25%",
+    "uptimeYear": "99.25%",
+    "time": 7885,
+    "timeDay": 8288,
+    "timeWeek": 7885,
+    "timeMonth": 7885,
+    "timeYear": 7885,
     "dailyMinutesDown": {
-      "2025-09-07": 0
+      "2025-09-07": 18
     }
   },
   {
