@@ -16,8 +16,6 @@ sites:
     url: https://www.habreports.org/habappusers/info/
   - name: SIMBA
     url: https://simba.srsl.com/
-  - name: IFCB Portal
-    url: https://ifcb-portal.sams.ac.uk/
     port: 80
     check: "tcp-ping"
     ipv6: true
