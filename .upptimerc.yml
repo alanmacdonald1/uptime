@@ -2,7 +2,6 @@
 owner: alanmacdonald1
 repo: uptime
 
-
 sites:
   - name: HAB Reports
     url: https://www.habreports.org/
