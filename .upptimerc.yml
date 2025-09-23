@@ -15,9 +15,6 @@ sites:
     url: https://www.habreports.org/habappusers/info/
   - name: SIMBA
     url: https://simba.sams-enterprise.com
-    port: 80
-    check: "tcp-ping"
-    ipv6: true
 
 status-website:
   # cname: demo.upptime.js.org   
