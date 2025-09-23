@@ -14,7 +14,7 @@ sites:
   - name: HAB Reports (Django)
     url: https://www.habreports.org/habappusers/info/
   - name: SIMBA
-    url: https://simba.srsl.com/
+    url: https://simba.sams-enterprise.com
     port: 80
     check: "tcp-ping"
     ipv6: true
