@@ -6,7 +6,7 @@ sites:
   - name: HAB Reports
     url: https://www.habreports.org/
   - name: Thredds
-    url: https://thredds.sams.ac.uk/
+    url: https://thredds.sams.ac.uk/thredds/catalog/catalog.html
   - name: IFCB Dashboard
     url: https://ifcb-data.sams.ac.uk/
   - name: SkateSpotter
