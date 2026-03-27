@@ -1,7 +1,7 @@
 url: https://thredds.sams.ac.uk/thredds/catalog/catalog.html
-status: up
-code: 200
-responseTime: 892
-lastUpdated: 2026-03-26T23:23:10.743Z
+status: down
+code: 502
+responseTime: 4788
+lastUpdated: 2026-03-27T14:30:13.913Z
 startTime: 2025-09-05T16:44:08.012Z
 generator: Upptime <https://github.com/upptime/upptime>
