@@ -1,0 +1,53 @@
+name: Teams Alerts
+
+on:
+  workflow_run:
+    workflows: ["Uptime CI"]
+    types:
+      - completed
+
+jobs:
+  notify:
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Teams alert
+        run: |
+          curl -X POST "${{ secrets.TEAMS_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "message",
+              "attachments": [
+                {
+                  "contentType": "application/vnd.microsoft.card.adaptive",
+                  "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.2",
+                    "body": [
+                      {
+                        "type": "TextBlock",
+                        "text": "🚨 Upptime alert",
+                        "weight": "Bolder",
+                        "size": "Medium"
+                      },
+                      {
+                        "type": "TextBlock",
+                        "text": "The Uptime CI workflow reported a failure.",
+                        "wrap": true
+                      },
+                      {
+                        "type": "TextBlock",
+                        "text": "Repo: '${{ github.repository }}'",
+                        "wrap": true
+                      },
+                      {
+                        "type": "TextBlock",
+                        "text": "Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}",
+                        "wrap": true
+                      }
+                    ]
+                  }
+                }
+              ]
+            }'
