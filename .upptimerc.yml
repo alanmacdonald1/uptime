@@ -15,6 +15,10 @@ sites:
     url: https://www.habreports.org/habappusers/info/
   - name: SIMBA
     url: https://simba.sams-enterprise.com
+  - name: CCAP
+    url: https://www.ccap.ac.uk/
+  - name: CCAP Catalogue
+    url: https://www.ccap.ac.uk/catalogue
 
 status-website:
   # cname: demo.upptime.js.org   
