@@ -11,77 +11,113 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Get recent commits
+      - name: Check latest commit for status change
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Fetch the last 10 commit messages on the default branch
-          MESSAGES=$(gh api repos/${{ github.repository }}/commits \
-            --jq '.[0:10] | .[].commit.message' \
+          # Get only the single most recent commit message
+          LATEST=$(gh api repos/${{ github.repository }}/commits \
+            --jq '.[0].commit.message' \
             -H "Accept: application/vnd.github+json")
 
-          echo "Recent commits:"
-          echo "$MESSAGES"
+          echo "Latest commit: $LATEST"
 
-          # Check if any recent commit indicates a site is down
-          if echo "$MESSAGES" | grep -q "🟥"; then
-            echo "has_outage=true" >> $GITHUB_OUTPUT
+          if echo "$LATEST" | grep -q "🟥"; then
+            echo "status=down" >> $GITHUB_OUTPUT
+            # Extract service name from commit like "🟥 IFCB Dashboard is down (0 in 0 ms)"
+            SERVICE=$(echo "$LATEST" | sed 's/🟥 //' | sed 's/ is down.*//')
+            echo "service=$SERVICE" >> $GITHUB_OUTPUT
 
-            # Extract the down services
-            DOWN=$(echo "$MESSAGES" | grep "🟥" | head -5)
-            echo "down_services<<EOF" >> $GITHUB_OUTPUT
-            echo "$DOWN" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
+          elif echo "$LATEST" | grep -q "🟩"; then
+            echo "status=up" >> $GITHUB_OUTPUT
+            SERVICE=$(echo "$LATEST" | sed 's/🟩 //' | sed 's/ is up.*//')
+            echo "service=$SERVICE" >> $GITHUB_OUTPUT
+
           else
-            echo "has_outage=false" >> $GITHUB_OUTPUT
+            echo "status=none" >> $GITHUB_OUTPUT
           fi
 
-      - name: Send Teams alert
-        if: steps.check.outputs.has_outage == 'true'
+      - name: Send DOWN alert
+        if: steps.check.outputs.status == 'down'
         run: |
-          DOWN_MSG=$(echo "${{ steps.check.outputs.down_services }}" | sed 's/"/\\"/g' | tr '\n' ' ')
           curl -X POST "${{ secrets.TEAMS_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
             -d '{
               "type": "message",
-              "attachments": [
-                {
-                  "contentType": "application/vnd.microsoft.card.adaptive",
-                  "content": {
-                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                    "type": "AdaptiveCard",
-                    "version": "1.2",
-                    "body": [
-                      {
-                        "type": "TextBlock",
-                        "text": "🚨 Site Down Alert",
-                        "weight": "Bolder",
-                        "size": "Medium",
-                        "color": "Attention"
-                      },
-                      {
-                        "type": "TextBlock",
-                        "text": "'"$DOWN_MSG"'",
-                        "wrap": true
-                      },
-                      {
-                        "type": "TextBlock",
-                        "text": "Repo: ${{ github.repository }}",
-                        "wrap": true
-                      },
-                      {
-                        "type": "ActionSet",
-                        "actions": [
-                          {
-                            "type": "Action.OpenUrl",
-                            "title": "View Actions",
-                            "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}"
-                          }
-                        ]
-                      }
-                    ]
-                  }
+              "attachments": [{
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "1.2",
+                  "body": [
+                    {
+                      "type": "TextBlock",
+                      "text": "🚨 Service Down",
+                      "weight": "Bolder",
+                      "size": "Large",
+                      "color": "Attention"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "${{ steps.check.outputs.service }} is currently unreachable.",
+                      "wrap": true
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "Repo: ${{ github.repository }}",
+                      "isSubtle": true,
+                      "wrap": true
+                    }
+                  ],
+                  "actions": [{
+                    "type": "Action.OpenUrl",
+                    "title": "View Status",
+                    "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}"
+                  }]
                 }
-              ]
+              }]
+            }'
+
+      - name: Send RECOVERY alert
+        if: steps.check.outputs.status == 'up'
+        run: |
+          curl -X POST "${{ secrets.TEAMS_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "message",
+              "attachments": [{
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "1.2",
+                  "body": [
+                    {
+                      "type": "TextBlock",
+                      "text": "✅ Service Recovered",
+                      "weight": "Bolder",
+                      "size": "Large",
+                      "color": "Good"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "${{ steps.check.outputs.service }} is back online.",
+                      "wrap": true
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "Repo: ${{ github.repository }}",
+                      "isSubtle": true,
+                      "wrap": true
+                    }
+                  ],
+                  "actions": [{
+                    "type": "Action.OpenUrl",
+                    "title": "View Status",
+                    "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}"
+                  }]
+                }
+              }]
             }'
