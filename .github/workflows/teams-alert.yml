@@ -10,36 +10,50 @@ jobs:
   notify:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check latest commit for status change
+      - name: Check commit for actual status transition
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Get only the single most recent commit message
-          LATEST=$(gh api repos/${{ github.repository }}/commits \
-            --jq '.[0].commit.message' \
+          CURRENT=$(gh api repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }} \
+            --jq '.commit.message' \
             -H "Accept: application/vnd.github+json")
 
-          echo "Latest commit: $LATEST"
+          echo "Current commit: $CURRENT"
 
-          if echo "$LATEST" | grep -q "🟥"; then
-            echo "status=down" >> $GITHUB_OUTPUT
-            # Extract service name from commit like "🟥 IFCB Dashboard is down (0 in 0 ms)"
-            SERVICE=$(echo "$LATEST" | sed 's/🟥 //' | sed 's/ is down.*//')
-            echo "service=$SERVICE" >> $GITHUB_OUTPUT
+          # Get a few recent commit messages so we can find the previous status commit
+          PREVIOUS=$(gh api repos/${{ github.repository }}/commits \
+            -H "Accept: application/vnd.github+json" \
+            --jq '.[].commit.message' | grep -E '🟥|🟩' | sed -n '2p')
 
-          elif echo "$LATEST" | grep -q "🟩"; then
-            echo "status=up" >> $GITHUB_OUTPUT
-            SERVICE=$(echo "$LATEST" | sed 's/🟩 //' | sed 's/ is up.*//')
-            echo "service=$SERVICE" >> $GITHUB_OUTPUT
+          echo "Previous status commit: $PREVIOUS"
 
-          else
-            echo "status=none" >> $GITHUB_OUTPUT
+          current_status="none"
+          previous_status="none"
+          service=""
+
+          if echo "$CURRENT" | grep -q "🟥"; then
+            current_status="down"
+            service=$(echo "$CURRENT" | sed 's/🟥 //' | sed 's/ is down.*//')
+          elif echo "$CURRENT" | grep -q "🟩"; then
+            current_status="up"
+            service=$(echo "$CURRENT" | sed 's/🟩 //' | sed 's/ is up.*//')
           fi
 
+          if echo "$PREVIOUS" | grep -q "🟥"; then
+            previous_status="down"
+          elif echo "$PREVIOUS" | grep -q "🟩"; then
+            previous_status="up"
+          fi
+
+          echo "current_status=$current_status" >> $GITHUB_OUTPUT
+          echo "previous_status=$previous_status" >> $GITHUB_OUTPUT
+          echo "service=$service" >> $GITHUB_OUTPUT
+
       - name: Send DOWN alert
-        if: steps.check.outputs.status == 'down'
+        if: steps.check.outputs.current_status == 'down' && steps.check.outputs.previous_status != 'down'
         run: |
           curl -X POST "${{ secrets.TEAMS_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
@@ -81,7 +95,7 @@ jobs:
             }'
 
       - name: Send RECOVERY alert
-        if: steps.check.outputs.status == 'up'
+        if: steps.check.outputs.current_status == 'up' && steps.check.outputs.previous_status == 'down'
         run: |
           curl -X POST "${{ secrets.TEAMS_WEBHOOK_URL }}" \
             -H "Content-Type: application/json" \
