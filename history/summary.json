@@ -72,11 +72,11 @@
     "icon": "https://icons.duckduckgo.com/ip3/ifcb-data.sams.ac.uk.ico",
     "slug": "ifcb-dashboard",
     "status": "up",
-    "uptime": "88.43%",
+    "uptime": "88.44%",
     "uptimeDay": "100.00%",
     "uptimeWeek": "98.87%",
     "uptimeMonth": "69.66%",
-    "uptimeYear": "88.43%",
+    "uptimeYear": "88.44%",
     "time": 8527,
     "timeDay": 7029,
     "timeWeek": 6698,
@@ -184,11 +184,11 @@
     "icon": "https://icons.duckduckgo.com/ip3/simba.sams-enterprise.com.ico",
     "slug": "simba",
     "status": "up",
-    "uptime": "93.64%",
+    "uptime": "93.65%",
     "uptimeDay": "100.00%",
     "uptimeWeek": "100.00%",
     "uptimeMonth": "100.00%",
-    "uptimeYear": "93.64%",
+    "uptimeYear": "93.65%",
     "time": 576,
     "timeDay": 641,
     "timeWeek": 527,
@@ -240,9 +240,9 @@
     "url": "https://www.ccap.ac.uk/catalogue",
     "icon": "https://icons.duckduckgo.com/ip3/www.ccap.ac.uk.ico",
     "slug": "ccap-catalogue",
-    "status": "up",
+    "status": "down",
     "uptime": "100.00%",
-    "uptimeDay": "100.00%",
+    "uptimeDay": "99.98%",
     "uptimeWeek": "100.00%",
     "uptimeMonth": "100.00%",
     "uptimeYear": "100.00%",
@@ -251,6 +251,8 @@
     "timeWeek": 300,
     "timeMonth": 289,
     "timeYear": 289,
-    "dailyMinutesDown": {}
+    "dailyMinutesDown": {
+      "2026-05-04": 0
+    }
   }
 ]
